@@ -1,9 +1,17 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
+var tours = [
+  {
+    id: 0, name: 'bb'
+  },
+  {
+    id:1, name: 'aaa'
+  }
+]
+
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.json(tours);
 });
 
 router.get('/add', function(req, res){
