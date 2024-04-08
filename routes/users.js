@@ -1,17 +1,10 @@
 var express = require('express');
+const User = require("../models/user");
 var router = express.Router();
 
-var tours = [
-  {
-    id: 0, name: 'bb'
-  },
-  {
-    id:1, name: 'aaa'
-  }
-]
 
-router.get('/', function(req, res, next) {
-  res.json(tours);
+router.get('/', async function(req, res, next) {
+  res.json(await User.getUser());
 });
 
 router.get('/add', function(req, res){
