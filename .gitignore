@@ -2,4 +2,4 @@
 /node_modules
 timeLine.txt
 DB.mdj
-/config/credentials.js
+credentials.js
