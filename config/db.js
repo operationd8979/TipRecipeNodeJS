@@ -7,7 +7,7 @@ const access = {
     password: credentials.sql.password,
     database: credentials.sql.database
 };  
-const con = mysql.createConnection(access);
+const con = mysql.createPool(access);
 
 module.exports = con;
 
