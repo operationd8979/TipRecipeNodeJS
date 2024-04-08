@@ -4,17 +4,7 @@ var cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var mongoose = require("mongoose");
-const credentials = require("./config/credentials");
-
-mongoose
-  .connect(credentials.mongo.development.connectionString)
-  .then(function () {
-    console.log("conneted");
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
+const mySQLConnection = require('./config/db');
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
