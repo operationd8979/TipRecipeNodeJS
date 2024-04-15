@@ -37,6 +37,17 @@ class DishModel {
         }
     }
 
+    static async getRatingUserOfDish(dishID, userID) {
+        try {
+            const query =
+                'SELECT dishID, rating, predictedRating as preRating, predictionTime as preRatingTime FROM ratings WHERE userID = ? AND dishID = ?';
+            const [rows] = await db.execute(query, [userID, dishID]);
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    }
+
     static async getRatingUserOfDishs(dishIDs, userID) {
         try {
             let query =
@@ -103,7 +114,7 @@ class DishModel {
     static async getDetailDishById(dishID) {
         try {
             const query =
-                'SELECT d.dishID, d.dishName, d.summary, d.url, GROUP_CONCAT(DISTINCT i.ingredientName) as ingredients, GROUP_CONCAT(DISTINCT t.typeName) as types, r.content FROM `dishs` d JOIN `dishingredients` di ON d.dishID = di.dishID JOIN `ingredients` i ON di.ingredientID = i.ingredientID JOIN `dishtypes` dt ON d.dishID = dt.dishID JOIN `typedishs` t ON dt.typeID = t.typeID JOIN `recipes` r ON d.dishID = r.dishID GROUP BY d.dishID HAVING d.dishID = ?';
+                "SELECT d.dishID, d.dishName, d.summary, d.url, GROUP_CONCAT(DISTINCT i.ingredientName ,'@', di.amount,'@', di.unit) as ingredients, GROUP_CONCAT(DISTINCT t.typeName) as types, r.content FROM `dishs` d JOIN `dishingredients` di ON d.dishID = di.dishID JOIN `ingredients` i ON di.ingredientID = i.ingredientID JOIN `dishtypes` dt ON d.dishID = dt.dishID JOIN `typedishs` t ON dt.typeID = t.typeID JOIN `recipes` r ON d.dishID = r.dishID GROUP BY d.dishID HAVING d.dishID = ?";
             const [rows] = await db.execute(query, [dishID]);
             return rows[0];
         } catch (err) {
@@ -176,6 +187,38 @@ class DishModel {
         query += ') ORDER BY RAND() LIMIT 10';
         const [rows] = await db.execute(query, dishIDs);
         return rows;
+    }
+
+    //admin
+    static async getCount(search) {
+        try {
+            const query = 'SELECT COUNT(*) as total FROM dishs WHERE dishName LIKE ?';
+            const [rows] = await db.execute(query, [`%${search}%`]);
+            return rows[0].total;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async getDishsAdmin(search, itemsPerPage, offset) {
+        try {
+            let query =
+                'SELECT d.dishID, d.dishName, d.summary, d.url, GROUP_CONCAT(DISTINCT i.ingredientName) as ingredients, GROUP_CONCAT(DISTINCT t.typeName) as types FROM `dishs` d JOIN `dishingredients` di ON d.dishID = di.dishID JOIN `ingredients` i ON di.ingredientID = i.ingredientID JOIN `dishtypes` dt ON d.dishID = dt.dishID JOIN `typedishs` t ON dt.typeID = t.typeID WHERE d.isDelete = 0 GROUP BY d.dishID Having d.dishName LIKE ? OR d.dishID LIKE ? LIMIT ? OFFSET ?';
+            const [rows] = await db.execute(query, [`%${search}%`, `%${search}%`, itemsPerPage, offset]);
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async deleteDish(dishID) {
+        try {
+            const query = 'UPDATE dishs SET isDelete = 1 WHERE dishID = ?';
+            const [rows] = await db.execute(query, [dishID]);
+            return rows.affectedRows > 0;
+        } catch (err) {
+            throw err;
+        }
     }
 }
 

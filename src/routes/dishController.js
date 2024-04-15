@@ -6,7 +6,9 @@ const { INTERNAL_SERVER_ERROR, NOT_FOUND_ERROR } = require('../contants/errorRes
 
 router.post('/', async function (req, res, next) {
     try {
-        const { search, ingredients, types, itemsPerPage, offset } = req.body;
+        let { search, ingredients, types, itemsPerPage, offset } = req.body;
+        if (typeof ingredients === 'string') ingredients = JSON.parse(ingredients);
+        if (typeof types === 'string') types = JSON.parse(types);
         let dishs = await DishService.getInstance().getDishs(
             search,
             ingredients,
@@ -69,6 +71,16 @@ router.get('/getRecommendDish', async function (req, res, next) {
     try {
         const dishs = await DishService.getInstance().getRecommendDishsByUser(req.user.userID);
         responseInit.InitRes(res, 200, dishs);
+    } catch (err) {
+        responseInit.InitRes(res, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+    }
+});
+
+router.get('/getRatingDish', async function (req, res, next) {
+    try {
+        const dishID = req.query.id;
+        const rating = await DishService.getInstance().getRatingUserOfDish(dishID, req.user.userID);
+        responseInit.InitRes(res, 200, rating);
     } catch (err) {
         responseInit.InitRes(res, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
     }

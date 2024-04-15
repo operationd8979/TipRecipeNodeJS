@@ -176,6 +176,10 @@ class DishService {
         return DishModel.getRecommendDishsByUser(userID);
     }
 
+    async getRatingUserOfDish(dishID, userID) {
+        return DishModel.getRatingUserOfDish(dishID, userID);
+    }
+
     cosineSimilarity(vectorA, vectorB) {
         let dotProduct = 0;
         for (let key in vectorA) {

@@ -18,4 +18,5 @@ module.exports = async function (email, subject, message) {
         subject: subject,
         text: message,
     });
+    console.log('Message sent: %s', info.messageId);
 };
