@@ -8,7 +8,7 @@ const app = express();
 const jwtFilter = require('./src/middlewares/jwtFilter');
 
 var corsOptions = {
-    origin: 'http://10.0.20.141:3000',
+    origin: 'http://192.168.1.78:3000',
     credentials: true,
     optionsSuccessStatus: 200,
 };
