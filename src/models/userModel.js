@@ -1,5 +1,6 @@
 const db = require('../../config/db');
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 
 class UserModel {
     static async getUserByEmail(email) {
@@ -26,29 +27,30 @@ class UserModel {
     }
 
     static async createUser(email, username, password) {
-        const userID = uniqid().rand(100000, 999999);
-        const query =
-            'INSERT INTO users (userID, email, username, password) VALUES (?, ?, ?, ?)';
-        const [rows] = await db.execute(query, [
-            userID,
-            email,
-            username,
-            bcrypt.hashSync(password, 10),
-        ]);
-        return rows;
+        try {
+            const rand = Math.floor(Math.random() * 900000) + 100000;
+            const userID = uuidv4() + rand;
+            const query = 'INSERT INTO users (userID, email, username, password) VALUES (?, ?, ?, ?)';
+            const [result] = await db.execute(query, [
+                userID,
+                email,
+                username,
+                bcrypt.hashSync(password, 10),
+            ]);
+            return result;
+        } catch (err) {
+            throw err;
+        }
     }
 
-    static async updateUser(userID, username, email, password) {
-        //check
-        const query =
-            'UPDATE users SET username = ?, email = ?, password = ? WHERE userID = ?';
-        const [rows] = await db.execute(query, [
-            username,
-            email,
-            bcrypt.hashSync(password, 10),
-            userID,
-        ]);
-        return rows;
+    static async updateUser(userID, username, password) {
+        try {
+            const query = 'UPDATE users SET username = ?, password = ? WHERE userID = ?';
+            const [result] = await db.execute(query, [username, password, userID]);
+            return result;
+        } catch (err) {
+            throw err;
+        }
     }
 }
 

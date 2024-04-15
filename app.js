@@ -8,10 +8,12 @@ const app = express();
 const jwtFilter = require('./src/middlewares/jwtFilter');
 
 var corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'http://10.0.20.141:3000',
+    credentials: true,
     optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+// app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());

@@ -13,7 +13,7 @@ class JwtService {
 
     static getInstance() {
         if (this.instance == null) {
-            this.instance = new JwtFilter();
+            this.instance = new JwtService();
         }
         return this.instance;
     }

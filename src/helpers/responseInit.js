@@ -1,6 +1,6 @@
 module.exports = {
     InitRes: function (res, code, data) {
-        if (code === 200) {
+        if (code.toString().startsWith('2')) {
             res.status(code).json({
                 success: true,
                 data: data,
