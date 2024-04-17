@@ -87,6 +87,10 @@ class DishService {
                     }
                 }
                 let isDoneWriteCache = this.cachingService.addCache('ratingMT', ratingMT);
+                if (isDoneWriteCache) {
+                    //save new cache and update avgRating
+                    await this.updateAvgRating();
+                }
             }
             for (let i = 0; i < userIDs.length; i++) {
                 simmilarUser[i] = {};
@@ -178,6 +182,10 @@ class DishService {
 
     async getRatingUserOfDish(dishID, userID) {
         return DishModel.getRatingUserOfDish(dishID, userID);
+    }
+
+    async updateAvgRating() {
+        return DishModel.updateAvgRating();
     }
 
     cosineSimilarity(vectorA, vectorB) {

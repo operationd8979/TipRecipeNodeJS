@@ -26,6 +26,18 @@ class AdminService {
     async deleteDish(dishID) {
         return DishModel.deleteDish(dishID);
     }
+
+    async addDish(dishName, summary, recipe, ingredients, types) {
+        return DishModel.addDish(dishName, summary, recipe, ingredients, types);
+    }
+
+    async updateDishUrl(dishID, url) {
+        return DishModel.updateDishUrl(dishID, url);
+    }
+
+    async modifyDish(dishID, dishName, summary, recipe, ingredients, types) {
+        return DishModel.modifyDish(dishID, dishName, summary, recipe, ingredients, types);
+    }
 }
 
 module.exports = AdminService;

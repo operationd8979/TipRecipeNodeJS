@@ -22,7 +22,7 @@ class CachingService {
             fs.existsSync(path) &&
             (Date.now() - fs.statSync(path).mtime.getTime()) / 1000 < this.cacheLifetime
         ) {
-            console.log('Get cache');
+            // console.log('Get cache');
             const data = require('../../' + path);
             return data ?? null;
         }
@@ -37,7 +37,7 @@ class CachingService {
         ) {
             return false;
         }
-        console.log('Add cache');
+        // console.log('Add cache');
         fs.writeFileSync(path, `module.exports = ${JSON.stringify(data)}`);
         return true;
     }

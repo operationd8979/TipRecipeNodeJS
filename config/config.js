@@ -15,6 +15,6 @@ module.exports = {
         hostname: 'localhost',
         user: 'root',
         password: '',
-        database: 'tiprecipe',
+        database: 'tiprecipenode',
     },
 };

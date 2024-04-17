@@ -22,7 +22,6 @@ router.post('/getDishs', async function (req, res, next) {
         const offset = req.body.offset || 0;
         const total = await AdminService.getInstance().getCount(search);
         const dishs = await AdminService.getInstance().getDishsAdmin(search, itemsPerPage, offset);
-        console.log(dishs);
         return responseInit.InitRes(res, 200, { total, dishs });
     } catch (err) {
         return responseInit.InitRes(res, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
@@ -39,6 +38,53 @@ router.get('/delete', async function (req, res, next) {
         return responseInit.InitRes(res, 200, 'Delete success');
     } catch (err) {
         console.log(err);
+        return responseInit.InitRes(res, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+    }
+});
+
+router.post('/addDish', async function (req, res, next) {
+    try {
+        let { dishName, summary, recipe, ingredients, types } = req.body;
+        if (typeof ingredients === 'string') ingredients = JSON.parse(ingredients);
+        if (typeof types === 'string') types = JSON.parse(types);
+        const result = await AdminService.getInstance().addDish(
+            dishName,
+            summary,
+            recipe,
+            ingredients,
+            types,
+        );
+        return responseInit.InitRes(res, 200, result);
+    } catch (err) {
+        return responseInit.InitRes(res, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+    }
+});
+
+router.post('/updateUrl', async function (req, res, next) {
+    try {
+        const { dishID, url } = req.body;
+        const result = await AdminService.getInstance().updateDishUrl(dishID, url);
+        return responseInit.InitRes(res, 200, result);
+    } catch (err) {
+        return responseInit.InitRes(res, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+    }
+});
+
+router.post('/modifyDish', async function (req, res, next) {
+    try {
+        let { dishID, dishName, summary, recipe, ingredients, types } = req.body;
+        if (typeof ingredients === 'string') ingredients = JSON.parse(ingredients);
+        if (typeof types === 'string') types = JSON.parse(types);
+        const result = await AdminService.getInstance().modifyDish(
+            dishID,
+            dishName,
+            summary,
+            recipe,
+            ingredients,
+            types,
+        );
+        return responseInit.InitRes(res, 200, result);
+    } catch (err) {
         return responseInit.InitRes(res, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
     }
 });

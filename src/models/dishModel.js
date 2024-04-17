@@ -220,6 +220,72 @@ class DishModel {
             throw err;
         }
     }
+
+    static async addDish(dishName, summary, recipe, ingredients, types) {
+        try {
+            const rand = Math.floor(Math.random() * 900000) + 100000;
+            const dishID = uuidv4() + rand;
+            const query = 'INSERT INTO dishs (dishID, dishName, summary) VALUES (?, ?, ?)';
+            await db.execute(query, [dishID, dishName, summary]);
+            const query2 = 'INSERT INTO recipes (dishID, content) VALUES (?, ?)';
+            await db.execute(query2, [dishID, recipe]);
+            for (let ingredient of ingredients) {
+                const query3 =
+                    'INSERT INTO dishingredients (dishID, ingredientID, amount, unit) VALUES (?, ?, ?, ?)';
+                await db.execute(query3, [dishID, ingredient.id, ingredient.amount, ingredient.unit]);
+            }
+            for (let type of types) {
+                const query4 = 'INSERT INTO dishtypes (dishID, typeID) VALUES (?, ?)';
+                await db.execute(query4, [dishID, type]);
+            }
+            return dishID;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async updateDishUrl(dishID, url) {
+        try {
+            const query = 'UPDATE dishs SET url = ? WHERE dishID = ?';
+            await db.execute(query, [url, dishID]);
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async modifyDish(dishID, dishName, summary, recipe, ingredients, types) {
+        try {
+            const query = 'UPDATE dishs SET dishName = ?, summary = ?, updated_at = NOW() WHERE dishID = ?';
+            await db.execute(query, [dishName, summary, dishID]);
+            const query2 = 'UPDATE recipes SET content = ? WHERE dishID = ?';
+            await db.execute(query2, [recipe, dishID]);
+            const query3 = 'DELETE FROM dishingredients WHERE dishID = ?';
+            await db.execute(query3, [dishID]);
+            for (let ingredient of ingredients) {
+                const query4 =
+                    'INSERT INTO dishingredients (dishID, ingredientID, amount, unit) VALUES (?, ?, ?, ?)';
+                await db.execute(query4, [dishID, ingredient.id, ingredient.amount, ingredient.unit]);
+            }
+            const query5 = 'DELETE FROM dishtypes WHERE dishID = ?';
+            await db.execute(query5, [dishID]);
+            for (let type of types) {
+                const query6 = 'INSERT INTO dishtypes (dishID, typeID) VALUES (?, ?)';
+                await db.execute(query6, [dishID, type]);
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async updateAvgRating() {
+        try {
+            const query =
+                'UPDATE dishs SET avgRating = (SELECT AVG(rating) FROM ratings WHERE ratings.dishID = dishs.dishID GROUP BY dishID)';
+            await db.execute(query);
+        } catch (err) {
+            throw err;
+        }
+    }
 }
 
 module.exports = DishModel;
